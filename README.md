@@ -185,7 +185,7 @@ To build `doas`, you'll need to have Xcode Command Line Tools, and use
 `bison` instead of `byacc`:
 
 ```sh
-YACC='bison -y' PREFIX=/opt/local make
+YACC='bison -y' PREFIX=/usr/local make
 ```
 
 Alternatively, if you have Xcode.app installed, you can just:
@@ -198,9 +198,18 @@ make
 Lastly, run the following:
 
 ```sh
-make install
+sudo make install
+
 cp /etc/pam.d/sudo /etc/pam.d/doas
+
+sudo chown root:wheel /usr/local/etc/doas.conf
+sudo chmod 600 /usr/local/etc/doas.conf
+
+sudo chown root:wheel /usr/local/bin/doas
+sudo chmod 4755 /usr/local/bin/doas
 ```
+
+This installs doas, copies your sudo PAM config over, and fixes any wonky permissions.
 
 > [!NOTE]
 > By default macOS blocks `doas` from using PAM modules, causing `doas`
