@@ -58,6 +58,12 @@ Or from [Pacstall](https://github.com/pacstall/pacstall) (Debian/Ubuntu):
 pacstall -I doas-git
 ```
 
+Or from [MacPorts](https://ports.macports.org/port/doas) (macOS):
+
+```sh
+sudo port install doas
+```
+
 ### 1. Installing build tools
 
 The `doas` program has virtually no dependencies. So long as you have a
