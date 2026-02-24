@@ -84,7 +84,7 @@ addnode(struct env *env, const char *key, const char *value)
 
 
 /* Copy an original (possibly static in memory) password structure.
-Make a deep copy of it so that our original andtarget do not overlap
+Make a deep copy of it so that our original and target do not overlap
 on future calls.
 */
 struct passwd *
