@@ -160,7 +160,7 @@ including ones with admin access, are added to the system later then
 Susan can use their accounts. It also means if the file is truncated or
 accessed while being updated the doas program may read the first rule
 before the second has been written, giving Susan access to everything,
-including the root account. The better approach to is explicity allow Susan
+including the root account. The better approach to is explicitly allow Susan
 to access only specific accounts she needs to use.
 
 Entries in the doas.conf file must end with a newline character to

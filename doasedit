@@ -2,7 +2,7 @@
 # Copy an existing text file to a temporary location. Then
 # Edit the file.
 # Attempt to then transfer the temporary file back to the original
-# location if the temprary file has been altered.
+# location if the temporary file has been altered.
 # Conclude with a little clean-up.
 # Try to avoid deleting any changes.
 
