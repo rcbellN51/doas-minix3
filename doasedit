@@ -50,12 +50,16 @@ fi
 # If $VISUAL fails, run $EDITOR.
 # $EDITOR should be a line editor functional without advanced terminal features.
 # $VISUAL is a more advanced editor such as vi.
-"${VISUAL:-vi}" "$temp_file"
-status=$?
+status=1
+if [ -n "${VISUAL}" ]
+then
+   "${VISUAL}" "$temp_file"
+   status=$?
+fi
 if [ $status -ne 0 ]
 then
     echo "Could not run visual editor $VISUAL"
-    "${EDITOR:-ex}" "$temp_file"
+    "${EDITOR:-vi}" "$temp_file"
     status=$?
     if [ $status -ne 0 ]
     then

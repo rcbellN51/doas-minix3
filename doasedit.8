@@ -15,7 +15,7 @@
 .\" TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 .\" PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd September 13, 2021
+.Dd September 21, 2021
 .Dt DOASEDIT 8
 .Os
 .Sh NAME
@@ -37,7 +37,7 @@ to run their text editor as the super user.
 The doasedit utility accepts one argument, the file to
 be edited. The text editor used during the editing process
 is set using the VISUAL environment variable. If VISUAL fails
-to run, EDITOR is tried instead.
+to run, EDITOR is tried instead. If EDITOR fails then the fallback is to use vi.
 .El
 .Sh EXIT STATUS
 .Ex -std
