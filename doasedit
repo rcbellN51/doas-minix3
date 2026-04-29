@@ -30,6 +30,9 @@ then
    exit 3
 fi
 
+# Get the absolute, real pathname of the file
+realfile=$(realpath "$1")
+
 temp_file=$(mktemp --tmpdir doasedit.XXXXXXXX)
 if [ ! -r "$temp_file" ]
 then
@@ -37,8 +40,8 @@ then
    exit 4
 fi
 
-mydir=$(dirname -- "$1")
-myfile=$(basename -- "$1")
+mydir=$(dirname -- "$realfile")
+myfile=$(basename -- "$realfile")
 cp "$mydir/$myfile" "$temp_file"
 status=$?
 if [ $status -ne 0 ]
@@ -68,6 +71,22 @@ then
       rm -f "$temp_file"
       exit 6
     fi
+fi
+
+# Check if real path has changed.
+newreal=$(realpath "$1")
+if [ "$newreal" != "$realfile" ]
+then
+   echo "Path of $1 has changed. Refusing to write file back."
+   echo "Leaving changes in $temp_file."
+   exit 7
+fi
+
+# Confirm original file has not been replaced by a link.
+if [ -L "$mydir/$myfile" ]
+then
+   echo "File is a symbolic link. Refusing to edit."
+   exit 2
 fi
 
 # Check to see if the file has been changed.
