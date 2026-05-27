@@ -29,10 +29,11 @@ Installing `doas` is accomplished in three steps:
 
 ## Getting Started
 
-### 0. Installation via packages/repositories:
+### 0. Installation via packages/repositories
 
 For Arch Linux users (and Arch-based distributions) there is [a package
 available in the AUR](https://aur.archlinux.org/packages/doas/):
+
 ```sh
 git clone https://aur.archlinux.org/doas.git
 cd doas
@@ -161,6 +162,7 @@ make install
 > PAM authentication by default. If this happens, it is usually possible to
 > work around the issue by running the following command as the
 > administrator:
+>
 > ```sh
 > cp /etc/pam.d/sudo /etc/pam.d/doas
 > ```
@@ -215,7 +217,8 @@ sudo chown root:wheel /usr/local/bin/doas
 sudo chmod 4755 /usr/local/bin/doas
 ```
 
-This installs doas, copies your sudo PAM config over, and fixes any wonky permissions.
+This installs `doas`, copies your `sudo` PAM configuration over,
+and fixes any wonky permissions.
 
 > [!NOTE]
 > By default macOS blocks `doas` from using PAM modules, causing `doas`
@@ -277,7 +280,7 @@ In effect this means certain information about your environment will not be
 passed to the target user and graphical desktop applications (GUI
 applications) will not be able to run. To enable graphical applications to
 run from `doas`, please use the `keepenv` keyword in the configuration file.
-See the doas.conf manual page for details.
+See the `doas.conf` manual page for details.
 
 ## Running commands using doas
 
@@ -285,17 +288,20 @@ To make use of `doas`, run it in front of any command. Here are some
 examples:
 
 Confirm `doas` is working by printing our effective user ID:
+
 ```sh
 doas id
 ```
 
 Create a new file in the root user's home:
+
 ```sh
 doas touch /root/new-file
 ```
 
 Edit a text file that requires admin access without running the text
 editor as the root user:
+
 ```sh
 doasedit /path/to/text/file
 ```
@@ -304,6 +310,7 @@ On Linux versions of `doas` prior to `6.3p1` required commands with
 arguments to be prefixed by a double-dash (--). From `6.3p1` and onward the
 double-dash is no longer required. Here we remove a directory owned by
 root:
+
 ```sh
 doas -- rm -rf old-directory
 ```
@@ -319,6 +326,7 @@ make uninstall
 ```
 
 While on most other platforms, such as FreeBSD, you can run:
+
 ```sh
 gmake uninstall
 ```
@@ -333,4 +341,4 @@ developer privately at jessefrgsmith AT yahoo DOT ca.
 
 Financial donations are always welcome and can be submitted via PayPal to
 jessefrgsmith AT yahoo DOT ca or through Patreon at
-https://www.patreon.com/sysvinit. Thank you for your support.
+<https://www.patreon.com/sysvinit>. Thank you for your support.
