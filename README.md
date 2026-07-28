@@ -65,6 +65,19 @@ Or from [MacPorts](https://ports.macports.org/port/doas) (macOS):
 sudo port install doas
 ```
 
+Or from the [SlackBuilds.org repository](https://slackbuilds.org/repository/15.0/system/doas/)
+(Slackware 15.0):
+
+```sh
+su -
+wget https://slackbuilds.org/slackbuilds/15.0/system/doas.tar.gz
+tar -xvf doas.tar.gz
+cd doas
+chmod +x doas.SlackBuild
+./doas.SlackBuild
+installpkg /tmp/doas-*.txz
+```
+
 ### 1. Installing build tools
 
 The `doas` program has virtually no dependencies. So long as you have a
