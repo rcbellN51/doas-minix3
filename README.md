@@ -69,10 +69,10 @@ Or from the [SlackBuilds.org repository](https://slackbuilds.org/repository/15.0
 (Slackware 15.0):
 
 ```sh
+su -
 wget https://slackbuilds.org/slackbuilds/15.0/system/doas.tar.gz
 tar -xvf doas.tar.gz
 cd doas
-wget https://codeberg.org/thejessesmith/doas/archive/6.4.tar.gz
 chmod +x doas.SlackBuild
 ./doas.SlackBuild
 installpkg /tmp/doas-*.txz
