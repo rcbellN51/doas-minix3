@@ -2,3 +2,8 @@
 *.final
 y.tab.c
 doas
+tests/closefrom_test
+tests/credtest
+tests/pam_strerror_test
+tests/pamtest
+doas-test

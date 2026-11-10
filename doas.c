@@ -205,13 +205,15 @@ checkconfig(const char *confpath, int argc, char **argv,
 	struct rule *rule;
         int status;
 
-	#if defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
-	status = setresuid(uid, uid, uid);
+	#if defined(__minix__)
+		status = setuid(uid);
+	#elif defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
+		status = setresuid(uid, uid, uid);
 	#else
-	status = setreuid(uid, uid);
+		status = setreuid(uid, uid);
 	#endif
-	if (status == -1)
-		errx(1, "unable to set uid to %d", uid);
+		if (status == -1)
+			errx(1, "unable to set uid to %d", uid);
 
 	parseconfig(confpath, 0);
 	if (!argc)
@@ -425,7 +427,7 @@ main(int argc, char **argv)
 		pam_handle_t *pamh = NULL;
 		int pam_err;
 
-/* #ifndef __linux__ */
+#ifndef __linux__
 		int temp_stdin;
 
 		/* openpam_ttyconv checks if stdin is a terminal and
@@ -442,7 +444,7 @@ main(int argc, char **argv)
 		if (temp_stdin == -1)
 			err(1, "dup");
 		close(STDIN_FILENO);
-/* #else */
+#else
 		/* force password prompt to display on stderr, not stdout */
 		int temp_stdout = dup(1);
 		if (temp_stdout == -1)
@@ -450,7 +452,7 @@ main(int argc, char **argv)
 		close(1);
 		if (dup2(2, 1) == -1)
 			err(1, "dup2");
-/* #endif */
+#endif
 
 		pam_err = pam_start("doas", myname, &pamc, &pamh);
 		if (pam_err != PAM_SUCCESS) {
@@ -479,6 +481,7 @@ main(int argc, char **argv)
 			case PAM_MAXTRIES:
 				syslog(LOG_AUTHPRIV | LOG_NOTICE,
 				    "failed auth for %s", myname);
+				pam_end(pamh, pam_err);
                                 errx(EXIT_FAILURE, "second authentication failed");
 				break;
 
@@ -493,6 +496,7 @@ main(int argc, char **argv)
 		case PAM_MAXTRIES:
 			syslog(LOG_AUTHPRIV | LOG_NOTICE,
 			    "failed auth for %s", myname);
+			pam_end(pamh, pam_err);
                         errx(EXIT_FAILURE, "authentication failed");
 			break;
 
@@ -526,6 +530,8 @@ main(int argc, char **argv)
 		temp_pw = getpwuid(target);
 	else
 		temp_pw = getpwnam(targetname);
+	if (temp_pw == NULL)
+		errx(1, "no passwd entry for target");
 	if (temp_pw->pw_shell[0] == '\0')
 		temp_pw->pw_shell = strdup(_PATH_BSHELL);
         target_pw = copyenvpw(temp_pw);
@@ -540,21 +546,27 @@ main(int argc, char **argv)
             LOGIN_SETUSER) != 0)
             errx(1, "failed to set user context for target");
 #else
-	#if defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
-	if (setresgid(target_pw->pw_gid, target_pw->pw_gid, target_pw->pw_gid) == -1)
-		err(1, "setresgid");
+	#if defined(__minix__)
+		if (setgid(target_pw->pw_gid) == -1)
+			err(1, "setgid");
+	#elif defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
+		if (setresgid(target_pw->pw_gid, target_pw->pw_gid, target_pw->pw_gid) == -1)
+			err(1, "setresgid");
 	#else
-	if (setregid(target_pw->pw_gid, target_pw->pw_gid) == -1)
-		err(1, "setregid");
+		if (setregid(target_pw->pw_gid, target_pw->pw_gid) == -1)
+			err(1, "setregid");
 	#endif
 	if (initgroups(target_pw->pw_name, target_pw->pw_gid) == -1)
 		err(1, "initgroups");
-	#if defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
-	if (setresuid(target, target, target) == -1)
-		err(1, "setresuid");
+	#if defined(__minix__)
+		if (setuid(target) == -1)
+			err(1, "setuid");
+	#elif defined(__linux__) || defined(__FreeBSD__) || defined(__MidnightBSD__)
+		if (setresuid(target, target, target) == -1)
+			err(1, "setresuid");
 	#else
-	if (setreuid(target, target) == -1)
-		err(1, "setreuid");
+		if (setreuid(target, target) == -1)
+			err(1, "setreuid");
 	#endif
 #endif
         /*
@@ -581,10 +593,15 @@ main(int argc, char **argv)
 
 	envp = prepenv(rule, original_pw, target_pw);
 
-	if (rule->cmd) {
+	#if defined(__minix__)
 		if (setenv("PATH", safepath, 1) == -1)
 			err(1, "failed to set PATH '%s'", safepath);
-	}
+	#else
+		if (rule->cmd) {
+			if (setenv("PATH", safepath, 1) == -1)
+				err(1, "failed to set PATH '%s'", safepath);
+		}
+	#endif
 	execvpe(cmd, argv, envp);
 	if (errno == ENOENT)
 		errx(1, "%s: command not found", cmd);

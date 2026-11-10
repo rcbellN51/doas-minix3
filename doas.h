@@ -33,8 +33,12 @@ struct passwd;
 char **prepenv(struct rule *, struct passwd *original, struct passwd *target);
 struct passwd *copyenvpw(struct passwd *original);
 
-#ifndef GLOBAL_PATH 
+#ifndef GLOBAL_PATH
+#if defined(__minix__)
+#define GLOBAL_PATH "/usr/local/sbin:/usr/local/bin:/usr/pkg/sbin:/usr/pkg/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+#else
 #define GLOBAL_PATH "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+#endif
 #endif
 
 #define PERMIT	1
@@ -62,7 +66,11 @@ struct passwd *copyenvpw(struct passwd *original);
 #endif
 
 #ifndef SAFE_PATH
+#if defined(__minix__)
+#define SAFE_PATH "/bin:/sbin:/usr/bin:/usr/sbin:/usr/pkg/bin:/usr/pkg/sbin:/usr/local/bin:/usr/local/sbin"
+#else
 #define SAFE_PATH "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+#endif
 #endif
 
 #ifndef MAX_ENV_LENGTH
